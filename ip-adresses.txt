@@ -1,0 +1,3 @@
+Saumur (Funtoo) 	172.97.103.88	saumur.host.funtoo.org
+Moscow (Amazon) 	107.21.194.86
+Annecy (Backupsy)	192.3.29.136
