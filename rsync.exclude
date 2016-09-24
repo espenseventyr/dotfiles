@@ -1,0 +1,8 @@
+# Exlude during rsync-backup of /Users/espen
+
+Library
+Public
+Downloads
+Music/iTunes
+Sync/Parallels
+.Trash
