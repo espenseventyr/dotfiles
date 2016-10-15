@@ -56,6 +56,8 @@ export PYENV_ROOT=/usr/local/var/pyenv
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 #Go
-export PATH=$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin
-export GOPATH=$HOME/src/go
+export GOPATH=$HOME/Go
+export GOROOT=/usr/local/opt/go/libexec
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin
 
