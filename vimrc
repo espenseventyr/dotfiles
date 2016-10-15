@@ -12,6 +12,7 @@ syntax on
 
 " Better command-line completion
 set wildmenu
+set wildmode=longest,list,full
 
 " Use case insensitive search except when using capital letters
 set ignorecase
@@ -28,16 +29,18 @@ set number
 
 " Number of visual spaces per TAB
 set tabstop=2
-
 " Number of spaces in TAB when editing
 set softtabstop=2
-
 " Number of spaces indented when reindent operations (>> and <<) are used
 set shiftwidth=2
-
 " Convert TABs to spaces
 set expandtab
-
 " Enable intelligent tabbing and spacing for indentation and alignment
 set smarttab
+
+" Enable direct edit for crontab
+autocmd filetype crontab setlocal nobackup nowritebackup
+
+execute pathogen#infect()
+
 

@@ -1,1 +1,2 @@
-rsync -avz --partial --exclude-from ~/dotfiles/rsync.exclude --delete -e 'ssh -i ~/.ssh/myid_rsa' /Users/espen espen@192.3.29.136:/rsync/macbook/backup.0 1>~/rsync/stdout.rsync 2>~/rsync/stderr.rsync
+#!/bin/bash
+/usr/bin/rsync -avz --partial --exclude-from ~/dotfiles/rsync.exclude --delete --ignore-errors -e '/usr/bin/ssh -i ~/.ssh/myid_rsa' /Users/espen espen@192.3.29.136:/rsync/stormaskin/backup.0 1>~/rsync/stdout.rsync 2>~/rsync/stderr.rsync
