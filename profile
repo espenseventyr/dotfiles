@@ -50,6 +50,9 @@ alias df="df -P"
 # Run keychain
 eval `keychain --eval --agents ssh --inherit any myid_rsa`
 
+# Vi-mode
+#eval `set -o vi`
+
 #Python
 export PYENV_ROOT=/usr/local/var/pyenv
 
