@@ -51,7 +51,7 @@ alias df="df -P"
 eval `keychain --eval --agents ssh --inherit any myid_rsa`
 
 # Vi-mode
-#eval `set -o vi`
+set -o vi
 
 #Python
 export PYENV_ROOT=/usr/local/var/pyenv
@@ -64,3 +64,4 @@ export GOROOT=/usr/local/opt/go/libexec
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
 
+export HOMEBREW_GITHUB_API_TOKEN="abe84073aa3d364dc863cff55dc18cfe2439bee6"
