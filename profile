@@ -10,7 +10,7 @@
 
 # Paths..., variables...
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
-export PATH=/usr/local/bin:/usr/bin:/bin:"$PATH"
+export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
 #export PATH=~/miniconda3/bin:"$PATH"
 
 export EDITOR=vim
