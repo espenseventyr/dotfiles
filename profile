@@ -1,10 +1,6 @@
 # Test for an interactive shell.  There is no need to set anything
 # past this point for scp and rcp, and it's important to refrain from
 # outputting anything in those cases.
-if [[ $- != *i* ]] ; then
-	# Shell is non-interactive.  Be done now!
-	return
-fi
 
 # Set prompt for screen
 #if [ -z "$PS1" ]; then
@@ -34,6 +30,13 @@ export LC_ADDRESS="en_US.UTF-8"
 export LC_TELEPHONE="en_US.UTF-8"
 export LC_MEASUREMENT="en_US.UTF-8"
 export LC_IDENTIFICATION="en_US.UTF-8"
+
+# Below, only for interactive shells
+if [[ $- != *i* ]] ; then
+	# Shell is non-interactive.  Be done now!
+	return
+fi
+
 
 # Aliases
 alias t="todo.sh"
