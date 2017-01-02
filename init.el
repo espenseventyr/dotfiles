@@ -3,11 +3,13 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
+;;(package-initialize)
 
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -60,14 +62,14 @@
 ;; IMPORTANT: For Emacs >= 23.2, you must place this *before* any
 ;; CEDET component (including EIEIO) gets activated by another 
 ;; package (Gnus, auth-source, ...).
-(load-file "~/.emacs.d/vendor/cedet/cedet-devel-load.el")
+;;(load-file "~/.emacs.d/vendor/cedet/cedet-devel-load.el")
 
 ;; Add further minor-modes to be enabled by semantic-mode.
 ;; See doc-string of `semantic-default-submodes' for other things
 ;; you can use here.
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
-(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+;(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+;(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+;(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
 
 ;; Enable Semantic
 (semantic-mode 1)
@@ -81,13 +83,6 @@
 (add-to-list 'load-path "~/.emacs.d/vendor/arduino-mode")
 (setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
 (autoload 'arduino-mode "arduino-mode" "Arduino editing mode." t)
-
-;; Lazy swapping buffers with buffer-move.el
-(require 'buffer-move)
-(global-set-key (kbd "<C-S-up>")     'buf-move-up)
-(global-set-key (kbd "<C-S-down>")   'buf-move-down)
-(global-set-key (kbd "<C-S-left>")   'buf-move-left)
-(global-set-key (kbd "<C-S-right>")  'buf-move-right)
 
 (defun my-go-mode-hook ()
   ; Call Gofmt before saving
@@ -104,3 +99,74 @@
 
 (set-face-attribute 'default nil :height 160)
 
+
+;; Lazy swapping buffers with buffer-move.el
+(require 'buffer-move)
+(global-set-key (kbd "<C-S-up>")     'buf-move-up)
+(global-set-key (kbd "<C-S-down>")   'buf-move-down)
+(global-set-key (kbd "<C-S-left>")   'buf-move-left)
+(global-set-key (kbd "<C-S-right>")  'buf-move-right)
+
+;; Buffer resizing
+(defun win-resize-top-or-bot ()
+  "Figure out if the current window is on top, bottom or in the
+middle"
+  (let* ((win-edges (window-edges))
+	 (this-window-y-min (nth 1 win-edges))
+	 (this-window-y-max (nth 3 win-edges))
+	 (fr-height (frame-height)))
+    (cond
+     ((eq 0 this-window-y-min) "top")
+     ((eq (- fr-height 1) this-window-y-max) "bot")
+     (t "mid"))))
+
+(defun win-resize-left-or-right ()
+  "Figure out if the current window is to the left, right or in the
+middle"
+  (let* ((win-edges (window-edges))
+	 (this-window-x-min (nth 0 win-edges))
+	 (this-window-x-max (nth 2 win-edges))
+	 (fr-width (frame-width)))
+    (cond
+     ((eq 0 this-window-x-min) "left")
+     ((eq (+ fr-width 4) this-window-x-max) "right")
+     (t "mid"))))
+
+(defun win-resize-enlarge-horiz ()
+  (interactive)
+  (cond
+   ((equal "top" (win-resize-top-or-bot)) (enlarge-window -1))
+   ((equal "bot" (win-resize-top-or-bot)) (enlarge-window 1))
+   ((equal "mid" (win-resize-top-or-bot)) (enlarge-window -1))
+   (t (message "nil"))))
+
+(defun win-resize-minimize-horiz ()
+  (interactive)
+  (cond
+   ((equal "top" (win-resize-top-or-bot)) (enlarge-window 1))
+   ((equal "bot" (win-resize-top-or-bot)) (enlarge-window -1))
+   ((equal "mid" (win-resize-top-or-bot)) (enlarge-window 1))
+   (t (message "nil"))))
+
+(defun win-resize-enlarge-vert ()
+  (interactive)
+  (cond
+   ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
+   ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
+   ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally -1))))
+
+(defun win-resize-minimize-vert ()
+  (interactive)
+  (cond
+   ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
+   ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
+   ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally 1))))
+
+(global-set-key [C-M-down] 'win-resize-minimize-vert)
+(global-set-key [C-M-up] 'win-resize-enlarge-vert)
+(global-set-key [C-M-left] 'win-resize-minimize-horiz)
+(global-set-key [C-M-right] 'win-resize-enlarge-horiz)
+(global-set-key [C-M-up] 'win-resize-enlarge-horiz)
+(global-set-key [C-M-down] 'win-resize-minimize-horiz)
+(global-set-key [C-M-left] 'win-resize-enlarge-vert)
+(global-set-key [C-M-right] 'win-resize-minimize-vert)
