@@ -13,7 +13,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (exec-path-from-shell go-mode))))
+ '(inhibit-startup-screen t)
+ '(package-selected-packages (quote (rust-mode exec-path-from-shell go-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -35,7 +36,6 @@
 (add-to-list 'load-path "/Users/espen/.emacs.d/packages")
 
 (setenv "GOPATH" "/Users/espen/Go")
-
 (add-to-list 'exec-path "/Users/espen/Go/bin")
 (add-hook 'before-save-hook 'gofmt-before-save)
 
@@ -45,6 +45,13 @@
 (require 'iso-transl)
 
 (setq default-input-method "MacOSX")
+
+(setq mac-option-modifier nil
+      mac-right-command-modifier 'meta
+      x-select-enable-clipboard t)
+
+
+
 
 (setq package-build-archive-dir "/Users/espen/.emacs.d/packages")
 
@@ -94,3 +101,6 @@
   (local-set-key (kbd "M-*") 'pop-tag-mark)
 )
 (add-hook 'go-mode-hook 'my-go-mode-hook)
+
+(set-face-attribute 'default nil :height 160)
+
