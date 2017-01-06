@@ -9,9 +9,9 @@
 #PS1='\h:\W \u\$ '
 
 # Paths..., variables...
-export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
-export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
-#export PATH=~/miniconda3/bin:"$PATH"
+export PATH="/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin"
+export PATH="$HOME/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+#export PATH="~/miniconda3/bin:$PATH"
 
 export EDITOR=vim
 export RI="--format ansi --width 70"
@@ -57,15 +57,18 @@ eval `keychain --eval --agents ssh --inherit any myid_rsa`
 set -o vi
 
 #Python
-export PYENV_ROOT=/usr/local/var/pyenv
+export PYENV_ROOT="/usr/local/var/pyenv"
 
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 #Go
-export GOPATH=$HOME/Go
-export GOROOT=/usr/local/opt/go/libexec
-export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:$GOROOT/bin
+export GOPATH="$HOME/Go"
+export GOROOT="/usr/local/opt/go/libexec"
+export PATH="$PATH:$GOPATH/bin"
+export PATH="$PATH:$GOROOT/bin"
 
 # Rust
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# Tex
+export PATH="/usr/local/texlive/2016basic/bin/x86_64-darwin/:$PATH"
