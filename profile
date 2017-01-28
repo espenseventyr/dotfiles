@@ -37,6 +37,8 @@ if [[ $- != *i* ]] ; then
 	return
 fi
 
+export CLICOLOR="1"
+export LSCOLORS="ExFxCxDxBxegedabagacad"
 
 # Aliases
 alias t="todo.sh"
