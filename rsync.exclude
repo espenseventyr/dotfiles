@@ -1,8 +1,9 @@
-# Exlude during rsync-backup of /Users/espen
+# Exlude during rsync-backup of /Users/espen on macbook
 
 Library
 Public
 Downloads
 Music/iTunes
 .Trash
-Sync/Parallels
+Parallels
+Windows
