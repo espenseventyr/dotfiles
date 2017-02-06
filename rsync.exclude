@@ -1,5 +1,6 @@
 # Exlude during rsync-backup of /Users/espen on macbook
 
+Dropbox/.dropbox.cache
 Library
 Public
 Downloads
