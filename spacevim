@@ -38,5 +38,12 @@ function! UserConfig()
     " let g:airline_powerline_fonts=1
     " color desert
     map <leader>nt :NERDTreeToggle<CR>
+    nnoremap <Leader>fw :w<CR>
+
+    set shiftwidth=2
+    set tabstop=2
+    set softtabstop=2
+    set wrap
+    
 
 endfunction
