@@ -32,18 +32,27 @@ endfunction
 
 " Put your costom configurations here, e.g., change the colorscheme.
 function! UserConfig()
-    let g:slime_target = "tmux"
 
     " If you enable airline layer and have installed the powerline fonts, set it here.
     " let g:airline_powerline_fonts=1
     " color desert
-    map <leader>nt :NERDTreeToggle<CR>
-    nnoremap <Leader>fw :w<CR>
 
     set shiftwidth=2
     set tabstop=2
     set softtabstop=2
     set wrap
-    
 
+    " Remap keys
+    nnoremap <Leader>fw :w<CR>
+    xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+    map <leader>nt :NERDTreeToggle<CR>
+
+    " Plugin specific options
+    let g:slime_target = "tmux"
+
+endfunction
+
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
 endfunction
