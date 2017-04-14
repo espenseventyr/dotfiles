@@ -68,6 +68,7 @@ fi
 
 export CLICOLOR="1"
 export LSCOLORS="ExFxCxDxBxegedabagacad"
+export TERM="xterm-256color"
 
 # Aliases
 alias t="todo.sh"
