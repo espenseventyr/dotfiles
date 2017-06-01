@@ -1,25 +1,17 @@
-# Test for an interactive shell.  There is no need to set anything
-# past this point for scp and rcp, and it's important to refrain from
-# outputting anything in those cases.
-
-# Set prompt for screen
-#if [ -z "$PS1" ]; then
-#   return
-#fi
-#PS1='\h:\W \u\$ '
+# For interactive shells: put commands below test for interactive shell.
 
 # Paths..., variables...
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
 export PATH=/usr/local/texlive/2016basic/bin/x86_64-darwin:"$PATH"
-export PATH=~/miniconda3/bin:"$PATH"
+#export PATH=~/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
 
 export EDITOR=vim
 export RI="--format ansi --width 70"
 export PAGER="less -R"
 
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
+export LANG="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
 export LC_NUMERIC="en_US.UTF-8"
 export LC_TIME="en_US.UTF-8"
 export LC_COLLATE=POSIX
@@ -31,6 +23,12 @@ export LC_ADDRESS="en_US.UTF-8"
 export LC_TELEPHONE="en_US.UTF-8"
 export LC_MEASUREMENT="en_US.UTF-8"
 export LC_IDENTIFICATION="en_US.UTF-8"
+
+export QT_VERSION=5.8.0
+export QT_DIR=$HOME/Qt5.8.0
+export QT_STUB=false
+export QT_DEBUG=false
+export QT_HOMEBREW=true
 
 # Vi-mode
 set -o vi

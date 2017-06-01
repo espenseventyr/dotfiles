@@ -27,6 +27,9 @@ function! UserInit()
     Plug 'scrooloose/nerdcommenter'
     Plug 'vim-syntastic/syntastic'
     Plug 'jpalardy/vim-slime'
+    Plug 'fatih/vim-go'
+    Plug 'Valloric/YouCompleteMe'
+    Plug 'majutsushi/tagbar'
     
 endfunction
 
@@ -41,14 +44,45 @@ function! UserConfig()
     set tabstop=2
     set softtabstop=2
     set wrap
+    let g:syntastic_ocaml_checkers=['merlin']
 
     " Remap keys
     nnoremap <Leader>fw :w<CR>
     xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
     map <leader>nt :NERDTreeToggle<CR>
+    map <leader>gr :GoRun %<CR>
 
     " Plugin specific options
     let g:slime_target = "tmux"
+
+    " Tagbar options
+    let g:tagbar_type_go = {
+        \ 'ctagstype' : 'go',
+        \ 'kinds'     : [
+            \ 'p:package',
+            \ 'i:imports:1',
+            \ 'c:constants',
+            \ 'v:variables',
+            \ 't:types',
+            \ 'n:interfaces',
+            \ 'w:fields',
+            \ 'e:embedded',
+            \ 'm:methods',
+            \ 'r:constructor',
+            \ 'f:functions'
+        \ ],
+        \ 'sro' : '.',
+        \ 'kind2scope' : {
+            \ 't' : 'ctype',
+            \ 'n' : 'ntype'
+        \ },
+        \ 'scope2kind' : {
+            \ 'ctype' : 't',
+            \ 'ntype' : 'n'
+        \ },
+        \ 'ctagsbin'  : 'gotags',
+        \ 'ctagsargs' : '-sort -silent'
+    \ }
 
 endfunction
 
@@ -56,3 +90,18 @@ function! ExecuteMacroOverVisualRange()
   echo "@".getcmdline()
   execute ":'<,'>normal @".nr2char(getchar())
 endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MULTIPURPOSE TAB KEY
+" Indent if we're at the beginning of a line. Else, do completion.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <expr> <tab> InsertTabWrapper()
+inoremap <s-tab> <c-n>
