@@ -1,4 +1,0 @@
-KEYCHAIN='/usr/local/bin/keychain --noask --eval --agents ssh --inherit any myid_rsa'
-
-0 01 * * * eval $KEYCHAIN && $HOME/bin/rsync.backup 
-27 23 * * * eval $KEYCHAIN && $HOME/bin/rsync.backup

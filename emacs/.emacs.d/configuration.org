@@ -1,0 +1,555 @@
+;; ~/.emacs.d/configuration.org
+;; configuration file
+
+* Some sensible defaults
+#+BEGIN_SRC emacs-lisp
+(load-file "~/.emacs.d/sensible-defaults.el/sensible-defaults.el")
+(sensible-defaults/use-all-settings)
+(sensible-defaults/use-all-keybindings)
+(sensible-defaults/backup-to-temp-directory)
+#+END_SRC
+
+* Start vim-emulation
+
+Use Vim-emulation mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :ensure t
+    :config
+    (evil-mode t)
+
+    (use-package evil-leader
+      :ensure t
+      :config
+      (global-evil-leader-mode))
+
+    (use-package evil-jumper
+      :ensure t
+      :config
+      (global-evil-jumper-mode))
+
+    (use-package evil-surround
+      :ensure t
+      :config
+      (global-evil-surround-mode))
+
+    (use-package evil-indent-textobject
+      :ensure t))
+#+END_SRC
+
+Enable =surround= everywhere.
+
+#+BEGIN_SRC emacs-lisp
+  (global-evil-surround-mode t)
+#+END_SRC
+
+I'd prefer not to expand abbrevs when I hit escape. That's always jarring and
+usually not what I want. In particular, it makes working with Coq really
+frustrating.
+
+#+BEGIN_SRC emacs-lisp
+  (setq evil-want-abbrev-expand-on-insert-exit nil)
+#+END_SRC
+
+Bind =C-p= to fuzzy-finding files in the current project.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+#+END_SRC#+END_SRC
+
+* Configure use-package
+
+Use this instead of cask
+
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(setq use-package-verbose t)
+(setq use-package-always-ensure t)
+
+(require 'use-package)
+#+END_SRC
+
+Always compile packages, and use the most recent package available.
+#+BEGIN_SRC emacs-lisp
+(use-package auto-compile
+  :config (auto-compile-on-load-mode))
+(setq load-prefer-newer t)
+#+END_SRC
+
+* Configure the UI
+** =Powerline= and =moe-theme=.
+
+#+BEGIN_SRC emacs-lisp
+(set-frame-font "Inconsolata 17" nil t)
+(tool-bar-mode -1)
+(require 'powerline)
+(powerline-vim-theme)
+(require 'moe-theme)
+;;(setq moe-light-pure-white-background-in-terminal t)
+(moe-light)
+(moe-theme-set-color 'cyan)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun toggle-fullscreen ()
+  "Toggle full screen"
+  (interactive)
+  (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+#+END_SRC
+
+** Use pretty lambdas...
+#+BEGIN_SRC emacs-lisp
+(global-prettify-symbols-mode t)
+#+END_SRC
+
+** Scroll conservatively
+
+When point goes outside the window, Emacs usually recenters the buffer point.
+I'm not crazy about that. This changes scrolling behavior to only scroll as far
+as point goes.
+
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 100)
+#+END_SRC
+
+** Highlight the current line
+
+=global-hl-line-mode= softly highlights the background color of the line
+containing point. It makes it a bit easier to find point, and it's useful when
+pairing or presenting code.
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (global-hl-line-mode))
+#+END_SRC
+
+** Hide certain modes from the modeline
+
+I'd rather have only a few necessary mode identifiers on my modeline. This
+either hides or "renames" a variety of major or minor modes using the =diminish=
+package.
+
+#+BEGIN_SRC emacs-lisp
+  (defmacro diminish-minor-mode (filename mode &optional abbrev)
+    `(eval-after-load (symbol-name ,filename)
+       '(diminish ,mode ,abbrev)))
+
+  (defmacro diminish-major-mode (mode-hook abbrev)
+    `(add-hook ,mode-hook
+               (lambda () (setq mode-name ,abbrev))))
+
+  (diminish-minor-mode 'abbrev 'abbrev-mode)
+  (diminish-minor-mode 'simple 'auto-fill-function)
+  (diminish-minor-mode 'company 'company-mode)
+  (diminish-minor-mode 'eldoc 'eldoc-mode)
+  (diminish-minor-mode 'flycheck 'flycheck-mode)
+  (diminish-minor-mode 'flyspell 'flyspell-mode)
+  (diminish-minor-mode 'global-whitespace 'global-whitespace-mode)
+  (diminish-minor-mode 'projectile 'projectile-mode)
+  (diminish-minor-mode 'ruby-end 'ruby-end-mode)
+  (diminish-minor-mode 'subword 'subword-mode)
+  (diminish-minor-mode 'undo-tree 'undo-tree-mode)
+  (diminish-minor-mode 'yard-mode 'yard-mode)
+  (diminish-minor-mode 'yasnippet 'yas-minor-mode)
+  (diminish-minor-mode 'wrap-region 'wrap-region-mode)
+
+  (diminish-minor-mode 'paredit 'paredit-mode " π")
+
+  (diminish-major-mode 'emacs-lisp-mode-hook "el")
+  (diminish-major-mode 'haskell-mode-hook "λ=")
+  (diminish-major-mode 'lisp-interaction-mode-hook "λ")
+  (diminish-major-mode 'python-mode-hook "Py")
+#+END_SRC
+
+* Some handy functions
+** Rename file and buffer.
+
+#+BEGIN_SRC emacs-lisp
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+          (message "A buffer named '%s' already exists!" new-name)
+        (progn
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
+#+END_SRC
+
+** jk exits to command-mode.
+
+#+BEGIN_SRC emacs-lisp
+;;Exit insert mode by pressing j and then k quickly
+(setq key-chord-two-keys-delay 0.2)
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-mode 1)
+#+END_SRC
+
+** Always indent with spaces
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+* Publishing and task management with Org-mode
+** Display preferences
+
+I like to see an outline of pretty bullets instead of a list of asterisks.
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (org-bullets-mode t)))
+#+END_SRC
+
+I like seeing a little downward-pointing arrow instead of the usual ellipsis
+(=...=) that org displays when there's stuff under a header.
+
+;#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "⤵")
+#+END_SRC
+
+Use syntax highlighting in source blocks while editing.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
+Make TAB act as if it were issued in a buffer of the language's major mode.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-tab-acts-natively t)
+#+END_SRC
+
+When editing a code snippet, use the current window rather than popping open a
+new one (which shows the same information).
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+
+Quickly insert a block of elisp:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-structure-template-alist
+               '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+#+END_SRC
+
+Enable spell-checking in Org-mode.
+
+;;#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'flyspell-mode)
+#+END_SRC
+
+** Task and org-capture management
+
+Store my org files in =~/org=, maintain an inbox in Dropbox, define the location
+of an index file (my main todo list), and archive finished tasks in
+=~/org/archive.org=.
+
+;;#+BEGIN_SRC emacs-lisp
+  (setq org-directory "~/org")
+
+  (defun org-file-path (filename)
+    "Return the absolute address of an org file, given its relative name."
+    (concat (file-name-as-directory org-directory) filename))
+
+  (setq org-inbox-file "~/Dropbox/inbox.org")
+  (setq org-index-file (org-file-path "index.org"))
+  (setq org-archive-location
+        (concat (org-file-path "archive.org") "::* From %s"))
+#+END_SRC
+
+I use [[http://agiletortoise.com/drafts/][Drafts]] to create new tasks, format them according to a template, and
+append them to an "inbox.org" file in my Dropbox. This function lets me import
+them easily from that inbox file to my index.
+
+;;#+BEGIN_SRC emacs-lisp
+  (defun hrs/copy-tasks-from-inbox ()
+    (when (file-exists-p org-inbox-file)
+      (save-excursion
+        (find-file org-index-file)
+        (goto-char (point-max))
+        (insert-file-contents org-inbox-file)
+        (delete-file org-inbox-file))))
+#+END_SRC
+
+I store all my todos in =~/org/index.org=, so I'd like to derive my agenda from
+there.
+
+;;#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files (list org-index-file))
+#+END_SRC
+
+Hitting =C-c C-x C-s= will mark a todo as done and move it to an appropriate
+place in the archive.
+
+;;#+BEGIN_SRC emacs-lisp
+  (defun hrs/mark-done-and-archive ()
+    "Mark the state of an org-mode item as DONE and archive it."
+    (interactive)
+    (org-todo 'done)
+    (org-archive-subtree))
+
+  (define-key org-mode-map (kbd "C-c C-x C-s") 'hrs/mark-done-and-archive)
+#+END_SRC
+
+Record the time that a todo was archived.
+
+;;#+BEGIN_SRC emacs-lisp
+  (setq org-log-done 'time)
+#+END_SRC
+
+**** Capturing tasks
+
+Define a few common tasks as capture templates. Specifically, I frequently:
+
+- Record ideas for future blog posts in =~/org/blog-ideas.org=,
+- Maintain a todo list in =~/org/index.org=.
+- Convert emails into todos to maintain an empty inbox.
+
+;;#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        '(("b" "Blog idea"
+           entry
+           (file (org-file-path "blog-ideas.org"))
+           "* %?\n")
+
+          ("e" "Email" entry
+           (file+headline org-index-file "Inbox")
+           "* TODO %?\nCREATED: %u\n%a\n")
+
+          ("f" "Finished book"
+           table-line (file "~/documents/notes/books-read.org")
+           "| %^{Title} | %^{Author} | %u |")
+
+          ("r" "Reading"
+           checkitem
+           (file (org-file-path "to-read.org")))
+
+          ("s" "Subscribe to an RSS feed"
+           plain
+           (file "~/documents/rss/urls")
+           "%^{Feed URL} \"~%^{Feed name}\"")
+
+          ("t" "Todo"
+           entry
+           (file+headline org-index-file "Inbox")
+           "* TODO %?\nCREATED: %u\n")))
+#+END_SRC
+
+When I'm starting an org capture template I'd like to begin in insert mode. I'm
+opening it up in order to start typing something, so this skips a step.
+
+;;#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+#+END_SRC
+
+**** Keybindings
+
+Bind a few handy keys.
+
+;;#+BEGIN_SRC emacs-lisp
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (define-key global-map "\C-cc" 'org-capture)
+#+END_SRC
+
+Hit =C-c i= to quickly open up my todo list.
+
+;;#+BEGIN_SRC emacs-lisp
+  (defun open-index-file ()
+    "Open the master org TODO list."
+    (interactive)
+    (hrs/copy-tasks-from-inbox)
+    (find-file org-index-file)
+    (flycheck-mode -1)
+    (end-of-buffer))
+
+  (global-set-key (kbd "C-c i") 'open-index-file)
+#+END_SRC
+
+Hit =M-n= to quickly open up a capture template for a new todo.
+
+;;#+BEGIN_SRC emacs-lisp
+  (defun org-capture-todo ()
+    (interactive)
+    (org-capture :keys "t"))
+
+  (global-set-key (kbd "M-n") 'org-capture-todo)
+  (add-hook 'gfm-mode-hook
+            (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
+  (add-hook 'haskell-mode-hook
+            (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
+#+END_SRC
+
+** Exporting
+
+Allow export to markdown and beamer (for presentations).
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-md)
+  (require 'ox-beamer)
+#+END_SRC
+
+Allow =babel= to evaluate Emacs lisp, dot, or Gnuplot code.
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)))
+     ;;(gnuplot . t)))
+#+END_SRC
+
+Don't ask before evaluating code blocks.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+END_SRC
+
+Translate regular ol' straight quotes to typographically-correct curly quotes
+when exporting.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-export-with-smart-quotes t)
+#+END_SRC
+
+**** Exporting to HTML
+
+Don't include a footer with my contact and publishing information at the bottom
+of every exported HTML document.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-html-postamble nil)
+#+END_SRC
+
+Exporting to HTML and opening the results triggers =/usr/bin/sensible-browser=,
+which checks the =$BROWSER= environment variable to choose the right browser.
+I'd like to always use Firefox, so:
+
+#+BEGIN_SRC emacs-lisp
+  (setenv "BROWSER" "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome")
+#+END_SRC
+
+**** Exporting to PDF
+
+I want to produce PDFs with syntax highlighting in the code. The best way to do
+that seems to be with the =minted= package, but that package shells out to
+=pygments= to do the actual work. =pdflatex= usually disallows shell commands;
+this enables that.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-latex-pdf-process
+        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+
+Include the =minted= package in all of my LaTeX exports.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+#+END_SRC
+
+**** Exporting projects
+
+I have a few Org project definitions that I maintain in a separate elisp file.
+
+;;#+BEGIN_SRC emacs-lisp
+  (load-file ".emacs.d/projects.el")
+#+END_SRC
+
+** TeX configuration
+
+I rarely write LaTeX directly any more, but I often export through it with
+org-mode, so I'm keeping them together.
+
+Automatically parse the file after loading it.
+
+#+BEGIN_SRC emacs-lisp
+  (setq TeX-parse-self t)
+#+END_SRC
+
+Always use =pdflatex= when compiling LaTeX documents. I don't really have any
+use for DVIs.
+
+#+BEGIN_SRC emacs-lisp
+  (setq TeX-PDF-mode t)
+#+END_SRC
+
+Open compiled PDFs in =evince= instead of in the editor.
+
+;;#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+        '(lambda ()
+           (delete '("\\.pdf\\'" . default) org-file-apps)
+           (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))
+#+END_SRC
+
+Enable a minor mode for dealing with math (it adds a few useful keybindings),
+and always treat the current file as the "main" file. That's intentional, since
+I'm usually actually in an org document.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (LaTeX-math-mode)
+              (setq TeX-master t)))
+#+END_SRC
+
+* C/++-programming
+** =Semantic=
+
+#+BEGIN_SRC emacs-lisp
+  (use-package cc-mode)
+    ;;(require 'cc-mode)
+
+  (use-package semantic
+  ;; (require 'semantic)
+  :config
+  (global-semanticdb-minor-mode 1)
+  (global-semantic-idle-scheduler-mode 1)
+
+  (semantic-mode 1))
+#+END_SRC
+
+** Default style
+
+Available C styles:
+“gnu”: The default style for GNU projects
+“k&r”: What Kernighan and Ritchie, the authors of C used in their book
+“bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
+“whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
+“stroustrup”: What Stroustrup, the author of C++ used in his book
+“ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
+“linux”: What the Linux developers use for kernel development
+“python”: What Python developers use for extension modules
+“java”: The default style for java-mode (see below)
+“user”: When you want to define your own style
+
+#+BEGIN_SRC emacs-lisp
+  (setq
+   c-default-style "stroustrup"
+   )
+#+END_SRC
+
+** Compilation mode
+
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "<f5>") (lambda ()
+                                    (interactive)
+                                    (setq-local compilation-read-command nil)
+                                    (call-interactively 'compile)))
+   #+END_SRC

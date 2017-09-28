@@ -5,6 +5,8 @@ export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
 export PATH=/usr/local/texlive/2016basic/bin/x86_64-darwin:"$PATH"
 #export PATH=~/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
+export PATH="$HOME/.cask/bin:$PATH"
+
 
 export EDITOR=vim
 export RI="--format ansi --width 70"
@@ -56,7 +58,7 @@ export OPENSSL_LIB_DIR="$(brew --prefix openssl)/lib"
 #export CXX=clang-3.9
 
 # OPAM configuration
-. /Users/espen/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+#. /Users/espen/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
 # Below, only for interactive shells
 if [[ $- != *i* ]] ; then
@@ -75,10 +77,10 @@ alias la="ls -a"
 alias l="ls -al"
 #alias irb="irb --readline -r irb/completion"
 #alias m="mvim"
-#alias python="python3"
-#alias pip="pip3"
+alias python="python2"
+alias pip="pip2"
 alias vi="vim"
 alias df="df -P"
 
 # Run keychain
-eval `keychain --eval --agents ssh --inherit any myid_rsa`
+#eval `keychain --eval --agents ssh --inherit any myid_rsa`
