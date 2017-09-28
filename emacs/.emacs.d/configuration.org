@@ -9,6 +9,20 @@
 (sensible-defaults/backup-to-temp-directory)
 #+END_SRC
 
+* Configure use-package
+
+Use this instead of cask
+
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(setq use-package-verbose t)
+(setq use-package-always-ensure t)
+
+(require 'use-package)
+#+END_SRC
+
 * Start vim-emulation
 
 Use Vim-emulation mode
@@ -38,12 +52,6 @@ Use Vim-emulation mode
       :ensure t))
 #+END_SRC
 
-Enable =surround= everywhere.
-
-#+BEGIN_SRC emacs-lisp
-  (global-evil-surround-mode t)
-#+END_SRC
-
 I'd prefer not to expand abbrevs when I hit escape. That's always jarring and
 usually not what I want. In particular, it makes working with Coq really
 frustrating.
@@ -58,20 +66,6 @@ Bind =C-p= to fuzzy-finding files in the current project.
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 #+END_SRC#+END_SRC
 
-* Configure use-package
-
-Use this instead of cask
-
-#+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(setq use-package-verbose t)
-(setq use-package-always-ensure t)
-
-(require 'use-package)
-#+END_SRC
-
 Always compile packages, and use the most recent package available.
 #+BEGIN_SRC emacs-lisp
 (use-package auto-compile
@@ -83,28 +77,32 @@ Always compile packages, and use the most recent package available.
 ** =Powerline= and =moe-theme=.
 
 #+BEGIN_SRC emacs-lisp
-(set-frame-font "Inconsolata 17" nil t)
-(tool-bar-mode -1)
-(require 'powerline)
-(powerline-vim-theme)
-(require 'moe-theme)
-;;(setq moe-light-pure-white-background-in-terminal t)
-(moe-light)
-(moe-theme-set-color 'cyan)
+  (set-frame-font "Inconsolata 17" nil t)
+  (tool-bar-mode -1)
+  (use-package powerline
+  :ensure t
+  :config
+  (powerline-vim-theme))
+  (use-package moe-theme
+  :ensure t
+  :config
+  ;;(setq moe-light-pure-white-background-in-terminal t)
+  (moe-light)
+  (moe-theme-set-color 'cyan))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun toggle-fullscreen ()
-  "Toggle full screen"
-  (interactive)
-  (set-frame-parameter
-     nil 'fullscreen
-     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+  (defun toggle-fullscreen ()
+    "Toggle full screen"
+    (interactive)
+    (set-frame-parameter
+       nil 'fullscreen
+       (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 #+END_SRC
 
 ** Use pretty lambdas...
 #+BEGIN_SRC emacs-lisp
-(global-prettify-symbols-mode t)
+  (global-prettify-symbols-mode t)
 #+END_SRC
 
 ** Scroll conservatively
@@ -190,15 +188,19 @@ package.
 
 #+BEGIN_SRC emacs-lisp
 ;;Exit insert mode by pressing j and then k quickly
+(use-package key-chord
+:ensure t
+:config
 (setq key-chord-two-keys-delay 0.2)
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-(key-chord-mode 1)
+(key-chord-mode 1))
 #+END_SRC
 
 ** Always indent with spaces
 
 #+BEGIN_SRC emacs-lisp
-(setq-default indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
+  (setq tab-always-indent 'complete)
 #+END_SRC
 
 * Publishing and task management with Org-mode
@@ -207,10 +209,12 @@ package.
 I like to see an outline of pretty bullets instead of a list of asterisks.
 
 #+BEGIN_SRC emacs-lisp
-(use-package org-bullets)
+(use-package org-bullets
+:ensure t
+:config
   (add-hook 'org-mode-hook
             (lambda ()
-              (org-bullets-mode t)))
+              (org-bullets-mode t))))
 #+END_SRC
 
 I like seeing a little downward-pointing arrow instead of the usual ellipsis
@@ -399,8 +403,8 @@ Hit =M-n= to quickly open up a capture template for a new todo.
 Allow export to markdown and beamer (for presentations).
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ox-md)
-  (require 'ox-beamer)
+  (use-package ox-md)
+  (use-package ox-beamer)
 #+END_SRC
 
 Allow =babel= to evaluate Emacs lisp, dot, or Gnuplot code.
@@ -513,11 +517,11 @@ I'm usually actually in an org document.
 ** =Semantic=
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cc-mode)
-    ;;(require 'cc-mode)
+  (use-package cc-mode
+:ensure t)
 
   (use-package semantic
-  ;; (require 'semantic)
+:ensure t
   :config
   (global-semanticdb-minor-mode 1)
   (global-semantic-idle-scheduler-mode 1)
