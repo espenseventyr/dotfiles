@@ -24,7 +24,7 @@ fi
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
-source ~/.bash_completion.d/mbed
+#source ~/.bash_completion.d/mbed
 
 export QSYS_ROOTDIR="/home/espen/intelFPGA_lite/17.0/quartus/sopc_builder/bin"
 export PATH="/home/espen/.cask/bin:$PATH"
