@@ -2,118 +2,119 @@
 ;; configuration file
 
 * Some sensible defaults
-#+BEGIN_SRC emacs-lisp
-(load-file "~/.emacs.d/sensible-defaults.el/sensible-defaults.el")
-(sensible-defaults/use-all-settings)
-(sensible-defaults/use-all-keybindings)
-(sensible-defaults/backup-to-temp-directory)
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (load-file "~/.emacs.d/sensible-defaults.el/sensible-defaults.el")
+    (sensible-defaults/use-all-settings)
+    (sensible-defaults/use-all-keybindings)
+    (sensible-defaults/backup-to-temp-directory)
+  #+END_SRC
 
 * Configure use-package
+  Use this instead of cask
 
-Use this instead of cask
+  #+BEGIN_SRC emacs-lisp
+    (unless (package-installed-p 'use-package)
+      (package-install 'use-package))
 
-#+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+    (setq use-package-verbose t)
+    (setq use-package-always-ensure t)
 
-(setq use-package-verbose t)
-(setq use-package-always-ensure t)
+    (require 'use-package)
+  #+END_SRC
 
-(require 'use-package)
-#+END_SRC
+* The extensble vim-emulation layer
+** Use Vim-emulation mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package evil
+       :ensure t
+       :config
+       (evil-mode t)
 
-* Start vim-emulation
+       (use-package evil-leader
+         :ensure t
+         :config
+         (global-evil-leader-mode))
 
-Use Vim-emulation mode
+       (use-package evil-surround
+         :ensure t
+         :config
+         (global-evil-surround-mode))
 
-#+BEGIN_SRC emacs-lisp
-  (use-package evil
-    :ensure t
-    :config
-    (evil-mode t)
+       (use-package evil-indent-textobject
+         :ensure t))
+   #+END_SRC
 
-    (use-package evil-leader
-      :ensure t
-      :config
-      (global-evil-leader-mode))
+** Modifications
+   I'd prefer not to expand abbrevs when I hit escape. That's always jarring and
+   usually not what I want. In particular, it makes working with Coq really
+   frustrating.
 
-    (use-package evil-jumper
-      :ensure t
-      :config
-      (global-evil-jumper-mode))
+   #+BEGIN_SRC emacs-lisp
+     (setq evil-want-abbrev-expand-on-insert-exit nil)
+   #+END_SRC
 
-    (use-package evil-surround
-      :ensure t
-      :config
-      (global-evil-surround-mode))
+   Always compile packages, and use the most recent package available.
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-compile
+       :config (auto-compile-on-load-mode))
+     (setq load-prefer-newer t)
+   #+END_SRC
 
-    (use-package evil-indent-textobject
-      :ensure t))
-#+END_SRC
+** Keybindings
+   Bind =C-p= to fuzzy-finding files in the current project. (Crashes with
+   evil-paste-pop, but it can also be called with M-y).
 
-I'd prefer not to expand abbrevs when I hit escape. That's always jarring and
-usually not what I want. In particular, it makes working with Coq really
-frustrating.
+   #+BEGIN_SRC emacs-lisp
+     ;;  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+   #+END_SRC#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (setq evil-want-abbrev-expand-on-insert-exit nil)
-#+END_SRC
-
-Bind =C-p= to fuzzy-finding files in the current project.
-
-#+BEGIN_SRC emacs-lisp
-  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
-#+END_SRC#+END_SRC
-
-Always compile packages, and use the most recent package available.
-#+BEGIN_SRC emacs-lisp
-(use-package auto-compile
-  :config (auto-compile-on-load-mode))
-(setq load-prefer-newer t)
-#+END_SRC
+   Bind =TAB= to indent-according-to-mode when in insert mode.
+   #+BEGIN_SRC emacs-lisp
+     (evil-define-key 'normal org-mode "TAB" 'indent-according-to-mode)
+   #+END_SRC
 
 * Configure the UI
 ** =Powerline= and =moe-theme=.
 
-#+BEGIN_SRC emacs-lisp
-  (set-frame-font "Inconsolata 17" nil t)
-  (tool-bar-mode -1)
-  (use-package powerline
-  :ensure t
-  :config
-  (powerline-vim-theme))
-  (use-package moe-theme
-  :ensure t
-  :config
-  ;;(setq moe-light-pure-white-background-in-terminal t)
-  (moe-light)
-  (moe-theme-set-color 'cyan))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (set-frame-font "Inconsolata 17" nil t)
+     (tool-bar-mode -1)
+     (use-package powerline
+     :ensure t
+     :config
+     (powerline-vim-theme))
+     (use-package moe-theme
+     :ensure t
+     :config
+     ;;(setq moe-light-pure-white-background-in-terminal t)
+     (moe-light)
+     (moe-theme-set-color 'cyan))
+   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (defun toggle-fullscreen ()
-    "Toggle full screen"
-    (interactive)
-    (set-frame-parameter
-       nil 'fullscreen
-       (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (defun toggle-fullscreen ()
+       "Toggle full screen"
+       (interactive)
+       (set-frame-parameter
+          nil 'fullscreen
+          (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+   #+END_SRC
 
 ** Use pretty lambdas...
-#+BEGIN_SRC emacs-lisp
-  (global-prettify-symbols-mode t)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (global-prettify-symbols-mode t)
+   #+END_SRC
 
 ** Scroll conservatively
 
-When point goes outside the window, Emacs usually recenters the buffer point.
-I'm not crazy about that. This changes scrolling behavior to only scroll as far
-as point goes.
+   When point goes outside the window, Emacs usually recenters the buffer point.
+   I'm not crazy about that. This changes scrolling behavior to only scroll as far
+   as point goes.
 
-#+BEGIN_SRC emacs-lisp
-  (setq scroll-conservatively 100)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (setq scroll-conservatively 10)
+(setq org-src-tab-acts-natively t)
+   #+END_SRC
 
 ** Highlight the current line
 
@@ -184,7 +185,7 @@ package.
           (set-buffer-modified-p nil))))))
 #+END_SRC
 
-** jk exits to command-mode.
+** jj exits to command-mode.
 
 #+BEGIN_SRC emacs-lisp
 ;;Exit insert mode by pressing j and then k quickly
@@ -192,7 +193,7 @@ package.
 :ensure t
 :config
 (setq key-chord-two-keys-delay 0.2)
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-mode 1))
 #+END_SRC
 
@@ -220,7 +221,7 @@ I like to see an outline of pretty bullets instead of a list of asterisks.
 I like seeing a little downward-pointing arrow instead of the usual ellipsis
 (=...=) that org displays when there's stuff under a header.
 
-;#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setq org-ellipsis "⤵")
 #+END_SRC
 
@@ -257,22 +258,40 @@ Enable spell-checking in Org-mode.
 #+END_SRC
 
 ** Task and org-capture management
+*** Todo-states and paths
+Setting todo-states
+
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
+#+END_SRC
+
+Adding bullet-journal capability:
+
+;#+BEGIN_SRC emacs-lisp
+(use-package org-journal
+:ensure t)
+
+#+END_SRC
 
 Store my org files in =~/org=, maintain an inbox in Dropbox, define the location
 of an index file (my main todo list), and archive finished tasks in
 =~/org/archive.org=.
 
-;;#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setq org-directory "~/org")
 
   (defun org-file-path (filename)
     "Return the absolute address of an org file, given its relative name."
     (concat (file-name-as-directory org-directory) filename))
 
-  (setq org-inbox-file "~/Dropbox/inbox.org")
+;;  (setq org-inbox-file "~/Dropbox/inbox.org")
+  (setq org-inbox-file "~/Dropbox/Apps/MobileOrg/mobileorg.org")
   (setq org-index-file (org-file-path "index.org"))
   (setq org-archive-location
         (concat (org-file-path "archive.org") "::* From %s"))
+  (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+
 #+END_SRC
 
 I use [[http://agiletortoise.com/drafts/][Drafts]] to create new tasks, format them according to a template, and
@@ -289,17 +308,19 @@ them easily from that inbox file to my index.
         (delete-file org-inbox-file))))
 #+END_SRC
 
+*** Agenda config
 I store all my todos in =~/org/index.org=, so I'd like to derive my agenda from
 there.
 
-;;#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setq org-agenda-files (list org-index-file))
 #+END_SRC
 
+*** Move completed task to archive
 Hitting =C-c C-x C-s= will mark a todo as done and move it to an appropriate
 place in the archive.
 
-;;#+BEGIN_SRC emacs-lisp
+;#+BEGIN_SRC emacs-lisp
   (defun hrs/mark-done-and-archive ()
     "Mark the state of an org-mode item as DONE and archive it."
     (interactive)
@@ -311,64 +332,56 @@ place in the archive.
 
 Record the time that a todo was archived.
 
-;;#+BEGIN_SRC emacs-lisp
+;#+BEGIN_SRC emacs-lisp
   (setq org-log-done 'time)
 #+END_SRC
 
-**** Capturing tasks
+*** Capturing tasks
 
 Define a few common tasks as capture templates. Specifically, I frequently:
 
-- Record ideas for future blog posts in =~/org/blog-ideas.org=,
 - Maintain a todo list in =~/org/index.org=.
 - Convert emails into todos to maintain an empty inbox.
 
-;;#+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-        '(("b" "Blog idea"
-           entry
-           (file (org-file-path "blog-ideas.org"))
-           "* %?\n")
+#+BEGIN_SRC emacs-lisp
+    (setq org-capture-templates
+          '(("e" "Email" entry
+             (file+headline org-index-file "Inbox")
+             "* TODO %?\nCREATED: %u\n%a\n")
 
-          ("e" "Email" entry
-           (file+headline org-index-file "Inbox")
-           "* TODO %?\nCREATED: %u\n%a\n")
+            ("t" "Todo"
+             entry
+             (file+headline org-index-file "Inbox")
+             "* TODO %?\nCREATED: %u\n")))
 
-          ("f" "Finished book"
-           table-line (file "~/documents/notes/books-read.org")
-           "| %^{Title} | %^{Author} | %u |")
+    (defun cust-org-task-capture ()
+  "Capture a task with my default template."
+  (interactive)
+  (org-capture nil "t"))
 
-          ("r" "Reading"
-           checkitem
-           (file (org-file-path "to-read.org")))
+  (define-key global-map (kbd "C-c c") 'cust-org-task-capture)
 
-          ("s" "Subscribe to an RSS feed"
-           plain
-           (file "~/documents/rss/urls")
-           "%^{Feed URL} \"~%^{Feed name}\"")
-
-          ("t" "Todo"
-           entry
-           (file+headline org-index-file "Inbox")
-           "* TODO %?\nCREATED: %u\n")))
 #+END_SRC
 
 When I'm starting an org capture template I'd like to begin in insert mode. I'm
 opening it up in order to start typing something, so this skips a step.
 
-;;#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
 #+END_SRC
 
-**** Keybindings
+*** Keybindings
 
 Bind a few handy keys.
 
-;;#+BEGIN_SRC emacs-lisp
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-ca" 'org-agenda)
-  (define-key global-map "\C-cc" 'org-capture)
+The following lines are always needed.  Choose your own keys.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cc" 'org-capture)
+  (global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
+
 
 Hit =C-c i= to quickly open up my todo list.
 
@@ -384,28 +397,8 @@ Hit =C-c i= to quickly open up my todo list.
   (global-set-key (kbd "C-c i") 'open-index-file)
 #+END_SRC
 
-Hit =M-n= to quickly open up a capture template for a new todo.
-
-;;#+BEGIN_SRC emacs-lisp
-  (defun org-capture-todo ()
-    (interactive)
-    (org-capture :keys "t"))
-
-  (global-set-key (kbd "M-n") 'org-capture-todo)
-  (add-hook 'gfm-mode-hook
-            (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
-  (add-hook 'haskell-mode-hook
-            (lambda () (local-set-key (kbd "M-n") 'org-capture-todo)))
-#+END_SRC
-
 ** Exporting
 
-Allow export to markdown and beamer (for presentations).
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ox-md)
-  (use-package ox-beamer)
-#+END_SRC
 
 Allow =babel= to evaluate Emacs lisp, dot, or Gnuplot code.
 
@@ -413,7 +406,7 @@ Allow =babel= to evaluate Emacs lisp, dot, or Gnuplot code.
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)))
-     ;;(gnuplot . t)))
+    ;;(gnuplot . t)))
 #+END_SRC
 
 Don't ask before evaluating code blocks.
@@ -513,35 +506,34 @@ I'm usually actually in an org document.
               (setq TeX-master t)))
 #+END_SRC
 
-* C/++-programming
+* C/C++-programming
 ** =Semantic=
 
-#+BEGIN_SRC emacs-lisp
-  (use-package cc-mode
-:ensure t)
+   #+BEGIN_SRC emacs-lisp
+     (use-package cc-mode
+     :ensure t)
 
-  (use-package semantic
-:ensure t
-  :config
-  (global-semanticdb-minor-mode 1)
-  (global-semantic-idle-scheduler-mode 1)
-
-  (semantic-mode 1))
-#+END_SRC
+     (use-package semantic
+     :ensure t
+     :config
+     (global-semanticdb-minor-mode 1)
+     (global-semantic-idle-scheduler-mode 1)
+     (semantic-mode 1))
+   #+END_SRC
 
 ** Default style
 
-Available C styles:
-“gnu”: The default style for GNU projects
-“k&r”: What Kernighan and Ritchie, the authors of C used in their book
-“bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
-“whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
-“stroustrup”: What Stroustrup, the author of C++ used in his book
-“ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
-“linux”: What the Linux developers use for kernel development
-“python”: What Python developers use for extension modules
-“java”: The default style for java-mode (see below)
-“user”: When you want to define your own style
+   Available C styles:
+   “gnu”: The default style for GNU projects
+   “k&r”: What Kernighan and Ritchie, the authors of C used in their book
+   “bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
+   “whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
+   “stroustrup”: What Stroustrup, the author of C++ used in his book
+   “ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
+   “linux”: What the Linux developers use for kernel development
+   “python”: What Python developers use for extension modules
+   “java”: The default style for java-mode (see below)
+   “user”: When you want to define your own style
 
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -556,4 +548,34 @@ Available C styles:
                                     (interactive)
                                     (setq-local compilation-read-command nil)
                                     (call-interactively 'compile)))
+   #+END_SRC
+
+* Haskell
+** =haskell-mode=
+   #+BEGIN_SRC emacs-lisp
+     (use-package haskell-mode
+     :ensure t)
+   #+END_SRC
+* Lisp
+** Geiser
+   #+BEGIN_SRC emacs-lisp
+     (use-package geiser
+     :ensure t
+     :config
+     (setq geiser-active-implementations '(racket))
+     (setq geiser-repl-use-other-window nil))
+   #+END_SRC
+
+** Paredit
+   #+BEGIN_SRC emacs-lisp
+     (use-package paredit
+     :ensure t
+     :config
+     (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+     (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+     (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+     (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+     (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+     (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+     (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
    #+END_SRC
