@@ -1,0 +1,86 @@
+# .config/kak/kakrc
+
+set global tabstop 4
+
+map global user n ':eval %{buffernext}<ret>'
+map global user b ':eval %{bufferprev}<ret>'
+
+# yank to system clipboard always
+hook global NormalKey y|d|c %{ nop %sh{
+   echo "$kak_selection" | pbcopy
+}}
+
+# select all occurrences in this buffer
+map global user a '*%s<c-/><ret>'
+
+# Using jj instead of esc
+hook global InsertChar j %{ try %{
+    exec -draft hH <a-k>jj<ret> d
+    exec <esc>
+    }}
+
+# Mapping special characters using the meta-key
+map global insert <§> <|>
+map global insert <a-1> <©>
+map global insert <a-2> <™>
+map global insert <a-3> <£>
+map global insert <a-4> <€>
+map global insert <a-5> <∞>
+map global insert <a-6> <§>
+map global insert <a-7> <|>
+map global insert <a-8> <[>
+map global insert <a-9> <]>
+map global insert <a-0> <{>
+map global insert <a-+> <}>
+map global insert <a-¨> <~>
+
+
+# Using the system clipboard
+map global user y '<a-|>pbcopy<ret>'
+map global user p '!pbpaste<ret>'
+
+# Autoindent and deindent with tab/shift-tab
+map global insert <tab> '<a-;><gt>'
+map global insert <backtab> '<a-;><lt>'
+
+############# HOOKS ########################
+
+# add lines numbers
+hook global WinCreate .* %{addhl number_lines}
+
+# add brackets highliting
+hook global WinCreate .* %{addhl show_matching}
+
+# use only spaces do not use tabs
+hook -group TabExpander global InsertChar \t %{ exec -draft h@}
+
+# Add autowrap to 72 characters in git-commit
+hook -group GitWrapper global WinSetOption filetype=git-commit %{
+    set buffer autowrap_column 72
+    autowrap-enable
+
+    hook window WinSetOption filetype=(?!git-commit).* %{ autowrap-disable }
+}
+
+hook -group PythonJediAutostart global WinSetOption filetype=python %{
+    jedi-enable-autocomplete
+}
+
+hook global WinSetOption filetype=(?!python).* %{
+    jedi-disable-autocomplete
+}
+
+# show all trailing whispaces red
+hook -group TrailingWhitespaces global WinCreate .* %{
+    addhl regex '\h+$' 0:default,red
+}
+
+# autowrap the status.txt file
+hook -group StatusAutowrap global WinCreate .*status\.txt %{
+    set buffer autowrap_column 35
+    autowrap-enable
+
+    hook window WinClose .*(?!status\.txt) %{ echo "test close" }
+}
+
+
