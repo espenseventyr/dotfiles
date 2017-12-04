@@ -79,7 +79,7 @@ alias l="ls -al"
 #alias m="mvim"
 alias python="python2"
 alias pip="pip2"
-alias vi="vim"
+alias vi="nvim"
 alias df="df -P"
 
 # Run keychain

@@ -25,7 +25,7 @@ map global insert <a-1> <©>
 map global insert <a-2> <™>
 map global insert <a-3> <£>
 map global insert <a-4> <€>
-map global insert <a-5> <∞>
+map global insert <a-5> <\>
 map global insert <a-6> <§>
 map global insert <a-7> <|>
 map global insert <a-8> <[>
@@ -33,6 +33,10 @@ map global insert <a-9> <]>
 map global insert <a-0> <{>
 map global insert <a-+> <}>
 map global insert <a-¨> <~>
+
+# Moving around
+#map global normal <home> <0>
+#map global normal <end> <$>
 
 
 # Using the system clipboard

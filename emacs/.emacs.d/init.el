@@ -23,7 +23,8 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (paredit geiser haskell-mode org-bullets evil-surround yasnippet web-mode use-package smex smartparens projectile prodigy powerline popwin pallet org nyan-mode multiple-cursors moe-theme matlab-mode magit key-chord idle-highlight-mode htmlize flycheck-cask expand-region exec-path-from-shell evil eval-in-repl ess drag-stuff))))
+    (helm-config helm paredit geiser haskell-mode org-bullets evil-surround yasnippet web-mode use-package smex smartparens projectile prodigy powerline popwin pallet org nyan-mode multiple-cursors moe-theme matlab-mode magit key-chord idle-highlight-mode htmlize flycheck-cask expand-region exec-path-from-shell evil eval-in-repl ess drag-stuff)))
+ '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
