@@ -4,8 +4,9 @@
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
 export PATH=/usr/local/texlive/2016basic/bin/x86_64-darwin:"$PATH"
-#export PATH=~/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
+export PATH=~/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
 export PATH="$HOME/.cask/bin:$PATH"
+export PATH="/usr/local/texlive/2017/bin/x86_64-darwin:$PATH"
 
 
 export EDITOR=vim
