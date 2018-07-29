@@ -19,13 +19,13 @@ fi
 
 # Use fzf
 # Ctrl-r searches bash-history with fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+#[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 # Use ripgrep with fzf
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+#export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 # Ctrl-T inserts file from fzf into command
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+#export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Ctrl-P edits a file in vim from fzf
-bind -x '"\C-p": vim $(fzf);'
+#bind -x '"\C-p": vim $(fzf);'
 
 # Use autojump
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+#[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh

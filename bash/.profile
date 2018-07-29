@@ -3,13 +3,12 @@
 # Paths..., variables...
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
-export PATH=/usr/local/texlive/2016basic/bin/x86_64-darwin:"$PATH"
 export PATH=~/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
-export PATH="$HOME/.cask/bin:$PATH"
-export PATH="/usr/local/texlive/2017/bin/x86_64-darwin:$PATH"
+#export PATH="$HOME/.cask/bin:$PATH"
+export PATH="/usr/local/texlive/2018/bin/x86_64-darwin:$PATH"
 
 
-export EDITOR=vim
+export EDITOR=vi
 export RI="--format ansi --width 70"
 export PAGER="less -R"
 
@@ -37,21 +36,21 @@ export QT_HOMEBREW=true
 set -o vi
 
 #Python
-export PYENV_ROOT=/usr/local/var/pyenv
+#export PYENV_ROOT=/usr/local/var/pyenv
 
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+#if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 #Go
-export GOPATH=$HOME/go
-export GOROOT=/usr/local/opt/go/libexec
-export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:$GOROOT/bin
+#export GOPATH=$HOME/go
+#export GOROOT=/usr/local/opt/go/libexec
+#export PATH=$PATH:$GOPATH/bin
+#export PATH=$PATH:$GOROOT/bin
 
 # Rust
-export PATH="$HOME/.cargo/bin:$PATH"
+#export PATH="$HOME/.cargo/bin:$PATH"
 
-export OPENSSL_INCLUDE_DIR="$(brew --prefix openssl)/include"
-export OPENSSL_LIB_DIR="$(brew --prefix openssl)/lib"
+#export OPENSSL_INCLUDE_DIR="$(brew --prefix openssl)/include"
+#export OPENSSL_LIB_DIR="$(brew --prefix openssl)/lib"
 
 #export LDFLAGS:  -L/usr/local/opt/llvm/lib
 #export CPPFLAGS: -I/usr/local/opt/llvm/include
