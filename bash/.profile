@@ -3,7 +3,7 @@
 # Paths..., variables...
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
-export PATH=~/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
+export PATH=/usr/local/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
 #export PATH="$HOME/.cask/bin:$PATH"
 export PATH="/usr/local/texlive/2018/bin/x86_64-darwin:$PATH"
 
@@ -77,8 +77,8 @@ alias la="ls -a"
 alias l="ls -al"
 #alias irb="irb --readline -r irb/completion"
 #alias m="mvim"
-alias python="python2"
-alias pip="pip2"
+#alias python="python2"
+#alias pip="pip2"
 alias vi="nvim"
 alias df="df -P"
 

@@ -31,16 +31,17 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+    (c-c++ :variables
+           c-c++-default-mode-for-headers 'c++-mode
+           python-enable-yapf-format-on-save t)
+     go
      python
      markdown
-     ;;clojure
      helm
      pandoc
      emacs-lisp
      git
      org
-     ;;company
-     ;;magit
      common-lisp
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -135,14 +136,14 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-dark
-                         solarized-light)
+   dotspacemacs-themes '(solarized-light
+                         solarized-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 14
+                               :size 17
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -309,6 +310,8 @@ configuration executes. This function is mostly useful for
 variables that need to be set before packages are loaded. If you
 are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+
+  (setenv "WORKON_HOME" "/usr/local/miniconda3/envs")
   )
 
 (defun dotspacemacs/user-config ()
@@ -319,13 +322,6 @@ where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a
 package is loaded, you should place your code here."
 
-  "Insert-mode when entering cider"
-  ;;  (defun my-cider-repl-toggle-insert-state ()
-  ;;    (if (cider-repl-mode)    ;; Checks if you're entering the debugger
-  ;;        (evil-insert-state)  ;; If so, turn on evil-insert-state
-  ;;      (evil-normal-state)  ;; Otherwise, turn on normal-state
-
-  ;; (add-hook 'cider-repl-mode-hook 'my-cider-repl-toggle-insert-state)
   (setq-default fill-column 70)
   )
 
@@ -336,9 +332,10 @@ package is loaded, you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (slime-company company slime smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit ghub let-alist with-editor yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic pandoc-mode ox-pandoc ht mmm-mode markdown-toc markdown-mode gh-md parinfer ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline solarized-theme restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (disaster cmake-mode clang-format powerline spinner parent-mode projectile pkg-info epl flx smartparens iedit anzu evil goto-chg eval-sexp-fu highlight bind-map bind-key packed helm helm-core popup undo-tree hydra f s async avy dash slime-company company slime smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit ghub let-alist with-editor yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic pandoc-mode ox-pandoc ht mmm-mode markdown-toc markdown-mode gh-md parinfer ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline solarized-theme restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
