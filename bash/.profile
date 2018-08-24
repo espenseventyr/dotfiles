@@ -69,6 +69,7 @@ fi
 export CLICOLOR="1"
 export LSCOLORS="ExFxCxDxBxegedabagacad"
 export TERM="xterm-256color"
+export PS1="\h:\W \u\$ "
 
 # Aliases
 alias t="todo.sh"
@@ -81,6 +82,7 @@ alias l="ls -al"
 #alias pip="pip2"
 alias vi="nvim"
 alias df="df -P"
+alias e="emacsclient"
 
 # Run keychain
 #eval `keychain --eval --agents ssh --inherit any myid_rsa`
