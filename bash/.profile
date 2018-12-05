@@ -10,7 +10,7 @@ export PATH="/usr/local/texlive/2018/bin/x86_64-darwin:$PATH"
 
 export EDITOR=vi
 export RI="--format ansi --width 70"
-export PAGER="less -R"
+export PAGER="less"
 
 export LANG="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
