@@ -3,10 +3,11 @@
 # Paths..., variables...
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:"$PATH"
-export PATH=/usr/local/miniconda3/bin:"$PATH" # Breaks compiling homebrew/youcompleteme
-#export PATH="$HOME/.cask/bin:$PATH"
-export PATH="/usr/local/texlive/2018/bin/x86_64-darwin:$PATH"
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+#export PATH=/usr/local/miniconda3/bin:"$PATH"
+#export PATH="/usr/local/texlive/2018/bin/x86_64-darwin:$PATH"
 
+#if [ -e /Users/espen/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/espen/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 export EDITOR=vi
 export RI="--format ansi --width 70"
@@ -26,18 +27,8 @@ export LC_TELEPHONE="en_US.UTF-8"
 export LC_MEASUREMENT="en_US.UTF-8"
 export LC_IDENTIFICATION="en_US.UTF-8"
 
-export QT_VERSION=5.8.0
-export QT_DIR=$HOME/Qt5.8.0
-export QT_STUB=false
-export QT_DEBUG=false
-export QT_HOMEBREW=true
-
-# Vi-mode
-set -o vi
-
 #Python
 #export PYENV_ROOT=/usr/local/var/pyenv
-
 #if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 #Go
@@ -49,9 +40,11 @@ set -o vi
 # Rust
 #export PATH="$HOME/.cargo/bin:$PATH"
 
+# OpenSSL
 #export OPENSSL_INCLUDE_DIR="$(brew --prefix openssl)/include"
 #export OPENSSL_LIB_DIR="$(brew --prefix openssl)/lib"
 
+# Clang
 #export LDFLAGS:  -L/usr/local/opt/llvm/lib
 #export CPPFLAGS: -I/usr/local/opt/llvm/include
 #export CC=clang-3.9
@@ -60,11 +53,19 @@ set -o vi
 # OPAM configuration
 #. /Users/espen/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
-# Below, only for interactive shells
+########################################
+#                                      #
+# Below, only for interactive shells   #
+#                                      #
+########################################
+
 if [[ $- != *i* ]] ; then
 	# Shell is non-interactive.  Be done now!
 	return
 fi
+
+# Edit mode
+set -o emacs
 
 export CLICOLOR="1"
 export LSCOLORS="ExFxCxDxBxegedabagacad"
@@ -76,10 +77,6 @@ alias t="todo.sh"
 alias ll="ls -l"
 alias la="ls -a"
 alias l="ls -al"
-#alias irb="irb --readline -r irb/completion"
-#alias m="mvim"
-#alias python="python2"
-#alias pip="pip2"
 alias vi="nvim"
 alias df="df -P"
 alias e="emacsclient"
